@@ -1,0 +1,49 @@
+<canvas id="c"></canvas>
+<script>
+  var w = 550, h = 750
+  var c = document.getElementById('c')
+  c.width = w; c.height = h
+  var ctx = c.getContext('2d')
+  function Fireball(x0, y0, v, angle, ttl, color) {
+    this.x0 = x0; this.y0 = y0; this.v = v; this.angle = angle; this.ttl = ttl; this.color = color; this.t = 0;
+  }
+  Fireball.prototype.position = function() {
+    var vx = this.v*Math.cos(this.angle), vy = this.v*Math.sin(this.angle)
+    return {x: this.x0+vx*this.t, y: this.y0-(vy-9.8*this.t)*this.t}
+  }
+  Fireball.prototype.nextFrame = function(ctx) {
+    this.t += 0.05
+    var p = this.position()
+    ctx.fillStyle = this.color
+    ctx.fillRect(p.x, p.y, 5, 5)
+    return this.t < this.ttl
+  }
+  Fireball.prototype.split = function() {
+    if (this.ttl < 4) return []
+    var r = [], p = this.position(), count = 10
+    for (var i = 0; i < count; i++) {
+      r.push(new Fireball(p.x, p.y, this.v/3, 2*Math.PI*i/count, this.ttl/3, this.color))
+    }
+    return r
+  }
+
+  var f = [new Fireball(w/2, h, h/5, Math.PI/3, 6, 'yellow')]
+  setInterval(function() {
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0, 0, w, h)
+    for (var i = 0; i < f.length; i++) {
+      var ff = f[i]
+      if (!ff.nextFrame(ctx)) {
+        f.splice(i, 1)
+        f.push(...ff.split())
+      }
+    }
+  }, 20)
+  function randomColor() {
+    return 'hsl(' + Math.floor(Math.random() * 255) + ',100%,50%)'
+  }
+  setInterval(function() {
+    var angle = Math.PI/2 + (Math.random()-0.5) * Math.PI/8
+    f.push(new Fireball(w/2, h, h/5, angle, 6, randomColor()))
+  }, 300)
+</script>
