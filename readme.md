@@ -4,7 +4,7 @@
 
 This repository contains source code used for "Fireworks in 5 minutes" project.
 
-![Tic tac toe](https://www.5minsofcode.com/assets/firework.png)
+![Firework](https://www.5minsofcode.com/assets/firework.png)
 
 ## Disclaimer
 
